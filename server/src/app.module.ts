@@ -5,6 +5,7 @@ import { ProductsModule } from './products/products.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseService } from './database/database.service';
+import { CategoriesModule } from './categories/categories.module';
 import * as path from 'path';
 
 @Module({
@@ -15,6 +16,7 @@ import * as path from 'path';
       envFilePath: path.resolve(__dirname, '..', '.env'),
     }),
     TypeOrmModule.forRootAsync({ useClass: DatabaseService }),
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
