@@ -1,6 +1,6 @@
 import { ProductInput } from '../interfaces';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsNumberString, IsString, Max, Min } from 'class-validator';
+import { IsNumber, IsString, Max, Min } from 'class-validator';
 
 export class CreateProductDto implements ProductInput {
   @ApiProperty()

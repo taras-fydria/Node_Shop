@@ -1,9 +1,21 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { Category } from '../entities/categories.entity';
-import { CreateCategory } from './interfaces';
 import { CreateCategoryDto } from './dto';
+import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult';
+import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -20,7 +32,7 @@ export class CategoriesController {
     }
   }
 
-  @Get()
+  @Get(':id')
   async getOne(@Param('id') id: number): Promise<Category> {
     try {
       return await this.categoriesService.getCategory(id);
@@ -30,11 +42,36 @@ export class CategoriesController {
   }
 
   @Post()
-  async create(@Body() body: CreateCategoryDto): Promise {
+  async create(@Body() body: CreateCategoryDto): Promise<Category> {
     try {
-      return await this.categoriesService.create(body);
+      const category = await this.categoriesService.create(body);
+      return category;
     } catch (e) {
-      return null;
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: number,
+    @Body() body: CreateCategoryDto,
+  ): Promise<UpdateResult> {
+    try {
+      const exist = this.categoriesService.categoryExist(id);
+      const category = await this.categoriesService.update(id, body);
+      return category;
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: number): Promise<DeleteResult> {
+    try {
+      await this.categoriesService.categoryExist(id);
+      return await this.categoriesService.delete(id);
+    } catch (e) {
+      throw new HttpException(e.message, e.statusCode);
     }
   }
 }

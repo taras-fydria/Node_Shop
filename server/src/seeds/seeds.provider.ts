@@ -1,18 +1,22 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ProductsService } from '../products/products.service';
 import { CreateProductDto } from '../products/dto';
-import { fa, faker } from '@faker-js/faker';
+import { fa, faker, th } from '@faker-js/faker';
+import { CreateCategoryDto } from '../categories/dto';
+import { CategoriesService } from '../categories/categories.service';
 
 @Injectable()
 export class SeedsProvider {
   constructor(
     private readonly logger: Logger,
+    private readonly categoryService: CategoriesService,
     private readonly productsService: ProductsService,
   ) {}
 
   async seed() {
     try {
       await this.products();
+      await this.categories();
     } catch (e) {
       this.logger.error('Failed seeding data');
     }
@@ -38,6 +42,24 @@ export class SeedsProvider {
       );
     } catch (e) {
       this.logger.error(`Failed seeding products. ${e}`);
+    }
+  }
+
+  async categories(): Promise<void> {
+    try {
+      for await (const _ of new Array(100)) {
+        const category: CreateCategoryDto = {
+          categoryName: faker.commerce.department(),
+          description: faker.lorem.text(),
+        };
+
+        await this.categoryService.create(category);
+      }
+      const result = await this.categoryService.getAllCategoriesCount();
+
+      this.logger.log(`Was created ${result} categories`);
+    } catch (e) {
+      this.logger.error(e.message, e.statusCode);
     }
   }
 }
