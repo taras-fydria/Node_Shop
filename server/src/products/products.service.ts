@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../entities/products.entity';
 import { FindManyOptions, Repository } from 'typeorm';
@@ -41,9 +41,20 @@ export class ProductsService {
     }
   }
 
-  async update(id: number, createProductDto: CreateProductDto) {
-    const result = await this.productsRepository.update(id, createProductDto);
-    return result;
+  async update(id: number, inputData: CreateProductDto) {
+    try {
+      const result = await this.productsRepository
+        .createQueryBuilder()
+        .update()
+        .set(inputData)
+        .where({ id })
+        .returning('*')
+        .execute();
+      console.log(result);
+      return result;
+    } catch (e) {
+      Logger.error(e);
+    }
   }
 
   async delete(productId: number): Promise<DeleteResult> {

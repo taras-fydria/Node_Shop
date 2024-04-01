@@ -14,29 +14,37 @@ import { ProductsService } from './products.service';
 import { CreateProductDto, ProductsQueryDto } from './dto';
 import { Product } from '../entities/products.entity';
 import { AllProductsResponse } from './interfaces';
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { IsNumberString } from 'class-validator';
 
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
-  @ApiCreatedResponse({ type: Product, isArray: true })
   @Get()
+  @ApiCreatedResponse({ type: Product, isArray: true })
   async getAll(@Query() query: ProductsQueryDto): Promise<AllProductsResponse> {
     const result = await this.productsService.getAll(query);
     return result;
   }
 
   @Post()
+  @ApiBody({ type: CreateProductDto })
+  @ApiCreatedResponse({ type: Product, isArray: false })
   async createNew(
     @Body() createDto: CreateProductDto,
   ): Promise<Product | null> {
     try {
       return await this.productsService.createNew(createDto);
     } catch (e) {
-      // console.log(e);
-      // throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      console.log(e);
+      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -46,6 +54,7 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @ApiBody({ type: CreateProductDto })
   async update(@Param('id') id: number, @Body() updateDto: CreateProductDto) {
     try {
       return await this.productsService.update(id, updateDto);
