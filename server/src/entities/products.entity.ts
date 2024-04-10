@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString, Max, Min } from 'class-validator';
-import { Category } from './categories.entity';
+import { CategoryEntity } from './categories.entity';
 
 @Entity()
-export class Product {
+export class ProductsEntity {
   @PrimaryGeneratedColumn()
   @ApiProperty()
   id: number;
@@ -46,6 +46,6 @@ export class Product {
   @IsNumber()
   createTimeStamp: number;
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category: Category;
+  @ManyToOne(() => CategoryEntity, (category) => category.products)
+  category: CategoryEntity;
 }

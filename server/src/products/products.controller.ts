@@ -12,15 +12,9 @@ import {
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto, ProductsQueryDto } from './dto';
-import { Product } from '../entities/products.entity';
+import { ProductsEntity } from '../entities/products.entity';
 import { AllProductsResponse } from './interfaces';
-import {
-  ApiBody,
-  ApiCreatedResponse,
-  ApiQuery,
-  ApiTags,
-} from '@nestjs/swagger';
-import { IsNumberString } from 'class-validator';
+import { ApiBody, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Products')
 @Controller('products')
@@ -28,7 +22,7 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
-  @ApiCreatedResponse({ type: Product, isArray: true })
+  @ApiCreatedResponse({ type: ProductsEntity, isArray: true })
   async getAll(@Query() query: ProductsQueryDto): Promise<AllProductsResponse> {
     const result = await this.productsService.getAll(query);
     return result;
@@ -36,10 +30,10 @@ export class ProductsController {
 
   @Post()
   @ApiBody({ type: CreateProductDto })
-  @ApiCreatedResponse({ type: Product, isArray: false })
+  @ApiCreatedResponse({ type: ProductsEntity, isArray: false })
   async createNew(
     @Body() createDto: CreateProductDto,
-  ): Promise<Product | null> {
+  ): Promise<ProductsEntity | null> {
     try {
       return await this.productsService.createNew(createDto);
     } catch (e) {

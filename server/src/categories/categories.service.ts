@@ -5,7 +5,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { Category } from '../entities/categories.entity';
+import { CategoryEntity } from '../entities/categories.entity';
 import { CreateCategoryDto } from './dto';
 import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
@@ -15,19 +15,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 @Injectable()
 export class CategoriesService {
   constructor(
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
   ) {}
 
-  async getAll(): Promise<Category[]> {
+  async getAll(): Promise<CategoryEntity[]> {
     return await this.categoryRepository.find();
   }
 
-  async getCategory(categoryId: number): Promise<Category> {
+  async getCategory(categoryId: number): Promise<CategoryEntity> {
     return await this.categoryRepository.findOne({ where: { id: categoryId } });
   }
 
-  async create(createDto: CreateCategoryDto): Promise<Category> {
+  async create(createDto: CreateCategoryDto): Promise<CategoryEntity> {
     return await this.categoryRepository.save(createDto);
   }
 

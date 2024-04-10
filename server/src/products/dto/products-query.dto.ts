@@ -1,7 +1,7 @@
 import { Order, ProductGetParams } from '../interfaces';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNumberString, IsOptional } from 'class-validator';
-import { Product } from '../../entities/products.entity';
+import { ProductsEntity } from '../../entities/products.entity';
 
 export class ProductsQueryDto implements ProductGetParams {
   @ApiProperty({ required: false })
@@ -29,11 +29,13 @@ export class ProductsQueryDto implements ProductGetParams {
 
   @ApiProperty({
     required: false,
-    enum: Object.keys(Product).filter(
-      (key) => typeof Product[key as keyof typeof Product] !== 'function',
+    enum: Object.keys(ProductsEntity).filter(
+      (key) =>
+        typeof ProductsEntity[key as keyof typeof ProductsEntity] !==
+        'function',
     ),
   })
   @IsOptional()
-  @IsEnum(Product)
+  @IsEnum(ProductsEntity)
   orderBy?: string;
 }

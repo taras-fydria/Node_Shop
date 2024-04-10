@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../entities/products.entity';
+import { ProductsEntity } from '../entities/products.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { CreateProductDto, ProductsQueryDto } from './dto';
 import { AllProductsResponse } from './interfaces';
@@ -9,12 +9,12 @@ import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 @Injectable()
 export class ProductsService {
   constructor(
-    @InjectRepository(Product)
-    private productsRepository: Repository<Product>,
+    @InjectRepository(ProductsEntity)
+    private productsRepository: Repository<ProductsEntity>,
   ) {}
 
   async getAll(query: ProductsQueryDto): Promise<AllProductsResponse> {
-    const options: FindManyOptions<Product> = {};
+    const options: FindManyOptions<ProductsEntity> = {};
 
     options.take = 'limit' in query ? query.limit : 100;
 
@@ -29,47 +29,34 @@ export class ProductsService {
     }
   }
 
-  async createNew(createDto: CreateProductDto): Promise<Product> {
+  async createNew(createDto: CreateProductDto): Promise<ProductsEntity> {
     return await this.productsRepository.save(createDto);
   }
 
-  async getProduct(id: number): Promise<Product | null> {
-    try {
-      return await this.productsRepository.findOne({ where: { id } });
-    } catch (e) {
-      return null;
-    }
+  async getProduct(id: number): Promise<ProductsEntity> {
+    return await this.productsRepository.findOne({ where: { id } });
   }
 
   async update(id: number, inputData: CreateProductDto) {
-    try {
-      const result = await this.productsRepository
-        .createQueryBuilder()
-        .update()
-        .set(inputData)
-        .where({ id })
-        .returning('*')
-        .execute();
-      console.log(result);
-      return result;
-    } catch (e) {
-      Logger.error(e);
-    }
+    const result = await this.productsRepository
+      .createQueryBuilder('update product')
+      .update()
+      .set(inputData)
+      .where({ id })
+      .returning('*')
+      .execute();
+    return result;
   }
 
   async delete(productId: number): Promise<DeleteResult> {
-    try {
-      return await this.productsRepository.delete(productId);
-    } catch (e) {
-      return e;
-    }
+    return await this.productsRepository.delete(productId);
   }
 
-  async getAllProductsCount() {
-    try {
-      return await this.productsRepository.count({});
-    } catch (e) {
-      return null;
-    }
+  async getAllProductsCount(): Promise<number> {
+    return await this.productsRepository.count({});
+  }
+
+  async existProduct(productId: number): Promise<boolean> {
+    return await this.productsRepository.exists({ where: { id: productId } });
   }
 }

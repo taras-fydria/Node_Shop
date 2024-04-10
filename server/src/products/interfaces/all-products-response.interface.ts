@@ -1,6 +1,6 @@
-import { Product } from '../../entities/products.entity';
+import { ProductsEntity } from '../../entities/products.entity';
 
 export interface AllProductsResponse {
-  products: Product[];
+  products: ProductsEntity[];
   totalFound: number;
 }

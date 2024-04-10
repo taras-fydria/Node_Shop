@@ -1,10 +1,10 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import { Product } from './products.entity';
+import { ProductsEntity } from './products.entity';
 
 @Entity()
-export class Category {
+export class CategoryEntity {
   @ApiProperty({})
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,6 +19,6 @@ export class Category {
   description: string;
 
   @ApiProperty()
-  @OneToMany(() => Product, (product) => product.category)
-  products: Product[];
+  @OneToMany(() => ProductsEntity, (product) => product.category)
+  products: ProductsEntity[];
 }

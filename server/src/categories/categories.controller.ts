@@ -5,14 +5,13 @@ import {
   Get,
   HttpException,
   HttpStatus,
-  Logger,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
-import { Category } from '../entities/categories.entity';
+import { CategoryEntity } from '../entities/categories.entity';
 import { CreateCategoryDto } from './dto';
 import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
@@ -24,7 +23,7 @@ export class CategoriesController {
 
   @Get()
   // @ApCo
-  async getAll(): Promise<Category[]> {
+  async getAll(): Promise<CategoryEntity[]> {
     try {
       return await this.categoriesService.getAll();
     } catch (e) {
@@ -33,7 +32,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  async getOne(@Param('id') id: number): Promise<Category> {
+  async getOne(@Param('id') id: number): Promise<CategoryEntity> {
     try {
       return await this.categoriesService.getCategory(id);
     } catch (e) {
@@ -42,7 +41,7 @@ export class CategoriesController {
   }
 
   @Post()
-  async create(@Body() body: CreateCategoryDto): Promise<Category> {
+  async create(@Body() body: CreateCategoryDto): Promise<CategoryEntity> {
     try {
       const category = await this.categoriesService.create(body);
       return category;
