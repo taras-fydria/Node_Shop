@@ -25,7 +25,7 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd ~/Development/
+          cd ~/Development/Node_Shop
           git pull origin master
           git status 
           rm -rf node_modules
