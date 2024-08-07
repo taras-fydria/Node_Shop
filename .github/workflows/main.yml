@@ -26,7 +26,7 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd ~/Development/Node_Shop
-          git pull origin master
+          git pull origin main
           git status 
           rm -rf node_modules
           rm -rf package-lock.json
