@@ -25,11 +25,10 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd ~/home/
-          ls -a
-          # git pull origin master
-          # git status 
-          # rm -rf node_modules
-          # rm -rf package-lock.json
-          # npm install
-          # pm2 restart node-shop-server
+          cd ~/Development/
+          git pull origin master
+          git status 
+          rm -rf node_modules
+          rm -rf package-lock.json
+          npm install
+          pm2 restart node-shop-server
