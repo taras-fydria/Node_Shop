@@ -17,7 +17,7 @@ export class ProductExist implements NestMiddleware {
   ): Promise<void> {
     if (!req.params.hasOwnProperty('id')) throw new BadRequestException();
     const { id } = req.params as { id: number };
-    const exist = this.productService.existProduct(id);
+    const exist = this.productService.pruductExist(id);
     if (!exist) throw new NotFoundException('Product was not found');
     next();
   }

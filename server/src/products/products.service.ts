@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProductsEntity } from '../entities/products.entity';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 import { CreateProductDto, ProductsQueryDto } from './dto';
-import { AllProductsResponse } from './interfaces';
+import { AllProductsResponse, ProductInput } from './interfaces';
 import { DeleteResult } from 'typeorm/query-builder/result/DeleteResult';
 
 @Injectable()
@@ -15,7 +15,6 @@ export class ProductsService {
 
   async getAll(query: ProductsQueryDto): Promise<AllProductsResponse> {
     const options: FindManyOptions<ProductsEntity> = {};
-
     options.take = 'limit' in query ? query.limit : 100;
 
     if ('offset' in query) options.skip = query.offset;
@@ -38,13 +37,18 @@ export class ProductsService {
   }
 
   async update(id: number, inputData: CreateProductDto) {
-    const result = await this.productsRepository
-      .createQueryBuilder('update product')
-      .update()
-      .set(inputData)
-      .where({ id })
-      .returning('*')
-      .execute();
+    const criteria: FindOptionsWhere<ProductsEntity> = {
+      id,
+    };
+
+    const result = await this.productsRepository.update(criteria, inputData);
+    //result.
+    //.createQueryBuilder('update product')
+    //.update()
+    //.set(inputData)
+    //.where({ id })
+    //.returning('*')
+    //.execute();
     return result;
   }
 
@@ -56,7 +60,19 @@ export class ProductsService {
     return await this.productsRepository.count({});
   }
 
-  async existProduct(productId: number): Promise<boolean> {
+  async pruductExist(productId: number): Promise<boolean> {
     return await this.productsRepository.exists({ where: { id: productId } });
+  }
+
+  protected getExistOptions(
+    productInput: ProductInput,
+  ): FindManyOptions<ProductsEntity> {
+    const options: FindManyOptions<ProductsEntity> = {};
+    //const where = {}
+    if (productInput.discount) {
+      options.where;
+    }
+
+    return options;
   }
 }

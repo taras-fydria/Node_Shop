@@ -1,5 +1,3 @@
-import { ProductsEntity } from '../../entities/products.entity';
-
 export enum Order {
   ASC = 'ASC',
 
